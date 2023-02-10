@@ -57,21 +57,26 @@ app.post("/login", async (request, response) => {
   const getUserQuery = `select * from user where username='${username}';`;
   const getUser = await db.get(getUserQuery);
 
-  if (getUser === undefined) {
-    const comparePassword = await bcrypt.compare(password, getUser.password);
-
-    if (comparePassword) {
-      response.status(200);
-      response.send("Login success!");
-    } else {
-      response.status(400);
-      response.send("Invalid password");
-    }
-  } else {
+  if (getUser === undefined)
+{
     response.status(400);
     response.send("Invalid user");
-  }
-});
+}
+else
+{
+    const comparePassword = await bcrypt.compare(password, getUser.password);    
+ 
+    if (comparePassword)
+    {
+        response.status(200);
+        response.send("Login success!");
+    }
+    else
+    {
+        response.status(400);
+        response.send("Invalid password");
+    }
+}
 
 app.put("/change-password", async (request, response) => {
   const { username, oldPassword, newPassword } = request.body;
@@ -79,10 +84,10 @@ app.put("/change-password", async (request, response) => {
   const getUser = await db.get(getUserQuery);
   // const updateQuery = `update user set oldPassword = '${oldPassword}',
   // newPassword = '${newPassword}';`;
-  if (userDetails !== undefined) {
+  if (getUser !== undefined) {
     const isPasswordValid = await bcrypt.compare(
       oldPassword,
-      userDetails.password
+      getUser.password
     );
     if (isPasswordValid) {
       if (newPassword.length > 5) {
